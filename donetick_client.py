@@ -23,15 +23,24 @@ def get_chores_due_today(base_url=DONETICK_BASE_URL, secret_key=DONETICK_SECRET_
     response.raise_for_status()
     
     all_chores = response.json()
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    print(today_str)
-    print(all_chores)
+    today = datetime.now().date()
     
-    # Filter chores where next_due_date starts with today's date (YYYY-MM-DD)
-    chores_due_today = [
-        chore for chore in all_chores 
-        if chore.get("nextDueDate") and chore["nextDueDate"].startswith(today_str)
-    ]
+    chores_due_today = []
+    for chore in all_chores:
+        next_due_str = chore.get("nextDueDate")
+        if next_due_str:
+            try:
+                # Handle 'Z' by replacing it with '+00:00' to support older Python fromisoformat
+                dt_utc = datetime.fromisoformat(next_due_str.replace('Z', '+00:00'))
+                # Convert to local timezone
+                dt_local = dt_utc.astimezone()
+                
+                if dt_local.date() == today:
+                    chores_due_today.append(chore)
+            except ValueError:
+                # Fallback to simple string check if parsing fails
+                if next_due_str.startswith(today.strftime("%Y-%m-%d")):
+                    chores_due_today.append(chore)
     
     return chores_due_today
 

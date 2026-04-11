@@ -53,7 +53,6 @@ def total_heights(text_data, spacing):
         h += local_height
         d.append(local_height)
 
-    print(h)
 
     return h
 
@@ -78,7 +77,6 @@ def create_todo_image(todo):
     curH = 0
 
     for data in all_data:
-        print(data)
         prodDraw.multiline_text((0, curH), data[0], font=data[1], align="center", spacing=data[2], fill="black")
         curH += data[3] + 20
     
