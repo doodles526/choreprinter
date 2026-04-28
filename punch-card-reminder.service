@@ -1,0 +1,12 @@
+[Unit]
+Description=Print Ferry Punch Card Reminder
+After=network.target
+
+[Service]
+Type=oneshot
+User=josh
+WorkingDirectory=/home/josh/src/epson-receipts
+ExecStart=/home/josh/src/epson-receipts/env/bin/python /home/josh/src/epson-receipts/print_next_punch_card.py
+
+[Install]
+WantedBy=multi-user.target

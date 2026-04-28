@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily Timer for Ferry Punch Card Reminder
+After=network.target
+
+[Timer]
+# Run every day at 5:00 PM
+OnCalendar=*-*-* 17:00:00
+Persistent=true
+Unit=punch-card-reminder.service
+
+[Install]
+WantedBy=timers.target
