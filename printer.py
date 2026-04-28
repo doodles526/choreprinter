@@ -3,6 +3,7 @@
 from escpos.printer import Usb
 import textwrap
 import math
+from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 
 p = Usb(0x4b8, 0x0202, profile="TM-T88V")
@@ -76,6 +77,52 @@ def create_todo_image(todo):
 
     curH = 0
 
+    for data in all_data:
+        prodDraw.multiline_text((0, curH), data[0], font=data[1], align="center", spacing=data[2], fill="black")
+        curH += data[3] + 20
+    
+    return prodImg
+
+def create_event_image(event):
+    """
+    Creates a PIL Image object from a calendar event dictionary.
+    Includes days remaining.
+    """
+    title_font = ImageFont.truetype("/usr/share/fonts/TTF/RobotoMonoNerdFont-Medium.ttf", 40)
+    date_font = ImageFont.truetype("/usr/share/fonts/TTF/RobotoMonoNerdFont-Medium.ttf", 30)
+    countdown_font = ImageFont.truetype("/usr/share/fonts/TTF/RobotoMonoNerdFont-Medium.ttf", 25)
+
+    name = event.get("name", "Unknown Event")
+    date_str = event.get("readable_date", "Unknown Date")
+    
+    # Calculate days remaining
+    now = datetime.now()
+    event_dt = event.get("datetime", now)
+    days_left = (event_dt.date() - now.date()).days
+    
+    if days_left == 0:
+        countdown_text = "TODAY!"
+    elif days_left == 1:
+        countdown_text = "Tomorrow!"
+    elif days_left < 0:
+        countdown_text = f"{-days_left} days ago"
+    else:
+        countdown_text = f"{days_left} days remaining"
+
+    name_lines = do_line_wrap(name, title_font, 512)
+    date_lines = do_line_wrap(date_str, date_font, 512)
+    countdown_lines = do_line_wrap(countdown_text, countdown_font, 512)
+
+    all_data = [
+        [name_lines, title_font, 10],
+        [date_lines, date_font, 10],
+        [countdown_lines, countdown_font, 5]
+    ]
+
+    prodImg = Image.new('RGB', (512, total_heights(all_data, 20)), "white")
+    prodDraw = ImageDraw.Draw(prodImg)
+
+    curH = 0
     for data in all_data:
         prodDraw.multiline_text((0, curH), data[0], font=data[1], align="center", spacing=data[2], fill="black")
         curH += data[3] + 20
