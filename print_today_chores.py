@@ -23,16 +23,16 @@ def transform_chore_to_todo(chore):
 
 def main():
     try:
-        print("Fetching chores due today...")
-        today_chores = donetick_client.get_chores_due_today()
+        print("Fetching chores due today or earlier...")
+        due_chores = donetick_client.get_all_due_chores()
         
-        if not today_chores:
-            print("No chores due today.")
+        if not due_chores:
+            print("No chores due today or earlier.")
             return
 
-        print(f"Found {len(today_chores)} chores. Printing...")
+        print(f"Found {len(due_chores)} chores. Printing...")
         
-        for chore in today_chores:
+        for chore in due_chores:
             todo = transform_chore_to_todo(chore)
             print(f"Printing: {todo['title']}")
             printer.image_from_todo(todo)
