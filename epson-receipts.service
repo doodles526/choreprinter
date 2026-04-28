@@ -1,0 +1,15 @@
+[Unit]
+Description=Run Epson Receipt Printer Chores
+After=network.target
+
+[Service]
+Type=oneshot
+User=josh
+WorkingDirectory=/home/josh/src/epson-receipts
+# Replace these with your actual values
+Environment="DONETICK_SECRET_KEY=your_secret_key_here"
+Environment="DONETICK_BASE_URL=https://donetick.com"
+ExecStart=/home/josh/src/epson-receipts/env/bin/python /home/josh/src/epson-receipts/print_today_chores.py
+
+[Install]
+WantedBy=multi-user.target

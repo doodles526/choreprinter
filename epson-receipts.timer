@@ -1,0 +1,15 @@
+[Unit]
+Description=Timer for Epson Receipt Printer Chores
+After=network.target
+
+[Timer]
+# Every minute from 7:30 AM to 7:59 AM
+OnCalendar=*-*-* 07:30..59:00
+# Every minute from 8:00 AM to 9:59 PM (21:59)
+OnCalendar=*-*-* 08..21:*:00
+# At exactly 10:00 PM
+OnCalendar=*-*-* 22:00:00
+Unit=epson-receipts.service
+
+[Install]
+WantedBy=timers.target
